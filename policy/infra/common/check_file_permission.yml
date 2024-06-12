@@ -1,0 +1,15 @@
+### check read-only permission policy ###
+# This policybook ensures that files are protected against unauthorized modification or deletion.
+# If the mode option for a task using the ansible.built-in.file module is not 444, a violation will be detected.
+---
+- name: Check for file permission
+  hosts: localhost 
+  policies:
+    - name: Check for file change
+      target: task
+      condition: input["ansible.builtin.file"].mode != "444"
+      actions:
+        - deny:
+            msg: The file permission {{ input["ansible.builtin.file"].mode }} is not allowed
+      tags:
+        - compliance

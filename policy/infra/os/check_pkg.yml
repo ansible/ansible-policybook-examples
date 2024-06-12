@@ -1,0 +1,18 @@
+### check package policy ###
+# This policybook check if only authorized packages are installed.
+# If a task using ansible.builtin.package is installing unapproved packages, a violation will be detected.
+---
+- name: Check for mysql package installation
+  hosts: localhost 
+  vars:
+    allowed_packages:
+      - "mysql-server"
+  policies:
+    - name: Check for package name
+      target: task
+      condition: input["ansible.builtin.package"].name not in allowed_packages
+      actions:
+        - deny:
+            msg: The package {{ input["ansible.builtin.package"].name }} is not allowed, allowed packages are one of {{ allowed_packages }}
+      tags:
+        - compliance

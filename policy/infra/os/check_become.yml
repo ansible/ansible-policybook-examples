@@ -1,0 +1,31 @@
+### check privilege escalation policy ###
+# This policybook check if become: true is used and check if only trusted user is used.
+---
+- name: Check for privilege escalation
+  hosts: localhost 
+  vars:
+    allowed_users:
+      - "user_1"
+  policies:
+    - name: Check for user name in task
+      target: task
+      condition: 
+        any:
+        - input.become == true and input.become_user not in allowed_users
+        - input.become == true and input lacks key become_user
+      actions:
+        - deny:
+            msg: privilege escalation is detected. allowed users are one of {{ allowed_users }}
+      tags:
+        - compliance
+    - name: Check for user name in play
+      target: play
+      condition: 
+        any:
+        - input.become == true and input.become_user not in allowed_users
+        - input.become == true and input lacks key become_user
+      actions:
+        - deny:
+            msg: privilege escalation is detected. allowed users are one of {{ allowed_users }}
+      tags:
+        - compliance
