@@ -1,0 +1,19 @@
+### check EC2 usage policy ###
+# This policybook checks the usage of EC2.
+# Only allow deployments into certain EC2 regions
+---
+- name: Check for ec2_instance region
+  hosts: localhost 
+  vars:
+    allowed_instance_regions:
+      - us-east-1
+      - us-east-2
+  policies:
+    - name: Check for ec2_instance region
+      target: task
+      condition: input["amazon.aws.ec2_instance"].region not in allowed_instance_regions
+      actions:
+        - deny:
+            msg: The instance region {{ input["amazon.aws.ec2_instance"].region }} is not allowed, you can only deploy to one of these {{ allowed_instance_regions }}
+      tags:
+        - compliance
