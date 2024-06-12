@@ -1,0 +1,28 @@
+### checks for firewalls policies ###
+# This policybook checks for firewall misconfigurations
+---
+- name: Check firewall rules are what they should be
+  hosts: localhost 
+  vars:
+    banned_services:
+    - http
+    banned_ports:
+    - 80
+    banned_protocols:
+    - icmp
+    banned_sources:
+    - 0.0.0.0/24
+  policies:
+    - name: Check on firewall policy violations
+      target: task
+      condition: 
+        any:
+        - input["ansible.posix.firewalld"].service in banned_services
+        - input["ansible.posix.firewalld"].port in banned_ports
+        - input["ansible.posix.firewalld"].protocol in banned_protocols
+        - input["ansible.posix.firewalld"].source in banned_sources
+      actions:
+        - deny:
+            msg: Banned firewall configuration attempted
+      tags:
+        - security
