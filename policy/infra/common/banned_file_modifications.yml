@@ -1,0 +1,21 @@
+### check critical file changes policy ###
+# This policybook checks for changes against critical files which are not allowed to be modified
+---
+- name: Check if critical files are attempting to be modified
+  hosts: localhost 
+  vars:
+    critical_files:
+    - /etc/sudoers
+  policies:
+    - name: Changes to critical files are not permitted
+      target: task
+      condition: 
+        any:
+        - input["ansible.builtin.file"].path in critical_files
+        - input["ansible.builtin.copy"].src in critical_files
+        - input["ansible.builtin.copy"].dest in critical_files
+      actions:
+        - deny:
+            msg: You are not allowed to change {{ critical_files }}
+      tags:
+        - compliance
