@@ -5,16 +5,17 @@
   hosts: localhost 
   vars:
     banned_configurations:
-    - line vty 0
-    - no login
+      telnet:
+        - line vty 0
+        - no login
   policies:
     - name: Check on IOS configuration
       target: task
       condition: 
         any:
-        - input["cisco.ios.ios_config"].lines contains banned_configurations
+        - input["cisco.ios.ios_config"].lines in banned_configurations.telnet
       actions:
         - deny:
-            msg: Cisco IOS settings violation!
+            msg: Cisco IOS settings violation
       tags:
         - security
