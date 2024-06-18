@@ -1,0 +1,22 @@
+### No shell or command usage policy ###
+# This policybook check if someone is using the shell or command modules
+---
+- name: Check for disallowed modules usage
+  hosts: localhost 
+  vars:
+    disallowed_modules:
+      - ansible.builtin.shell
+      - ansible.builtin.command
+      - ansible.builtin.raw
+      - ansible.builtin.script
+      - ansible.windows.win_shell
+      - ansible.windows.win_command
+  policies:
+    - name: Check for disallowed module usage
+      target: task
+      condition: input["ansible.builtin.shell"] in disallowed_modules
+      actions:
+        - deny:
+            msg: You are not allowed to run scripts or shell commands in automation jobs
+      tags:
+        - compliance

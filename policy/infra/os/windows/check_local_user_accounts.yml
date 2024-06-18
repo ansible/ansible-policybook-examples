@@ -1,0 +1,15 @@
+### check local Windows user accounts
+# This policybook checks and disallows local user accounts
+---
+- name: Checking local Windows user accounts
+  hosts: localhost 
+
+  policies:
+    - name: Check for local user accounts
+      target: task
+      condition: input["ansible.windows.win_user"].name is defined
+      actions:
+        - deny:
+            msg: Local Windows user accounts are not allowed - refer to company AD standards.
+      tags:
+        - compliance
