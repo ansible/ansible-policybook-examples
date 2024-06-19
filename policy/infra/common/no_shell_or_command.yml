@@ -1,5 +1,6 @@
 ### No shell or command usage policy ###
-# This policybook check if someone is using the shell or command modules
+# This policybook checks if someone is using the shell or command or other similar 'script' modules
+# This will check both FQCN and non-FQCN for module checks 
 ---
 - name: Check for disallowed modules usage
   hosts: localhost 
@@ -14,7 +15,7 @@
   policies:
     - name: Check for disallowed module usage
       target: task
-      condition: input["ansible.builtin.shell"] in disallowed_modules
+      condition: input._agk.task.module_info.fqcn in disallowed_modules or input._agk.task.module in disallowed_modules
       actions:
         - deny:
             msg: You are not allowed to run scripts or shell commands in automation jobs
