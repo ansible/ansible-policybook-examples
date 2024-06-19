@@ -7,7 +7,7 @@
   policies:
     - name: Check for mandatory use of encryption
       target: task
-      condition: input["amazon.aws.s3_bucket"].encryption is not defined
+      condition: input["amazon.aws.s3_bucket"] lacks key encryption
       actions:
         - deny:
             msg: AWS S3 bucket encryption has to be enabled
@@ -16,7 +16,7 @@
             
     - name: Check for correct encryption algorithm
       target: task
-      condition: input["amazon.aws.s3_bucket"].encryption != "AES256"
+      condition: input["amazon.aws.s3_bucket"].encryption != AES256
       actions:
         - deny:
             msg: AWS S3 bucket encryption algorithm does not meet standards
