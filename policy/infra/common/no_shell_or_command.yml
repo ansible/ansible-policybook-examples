@@ -21,3 +21,25 @@
             msg: You are not allowed to run scripts or shell commands in automation jobs
       tags:
         - compliance
+
+#
+# Here is an example "shell.yml" playbook that could be used to test this enforcement
+#
+#---
+#- name: Run provisioning commands
+#  hosts: localhost
+#  gather_facts: false
+#  vars:
+#    # (not required here just an example)
+#    foo: bar
+#
+#  tasks:
+#  - name: run shell command (non FQCN usage)
+#    shell: /usr/bin/logger "test test test"
+#
+#  - name: Return motd to registered var (FQCN usage)
+#    ansible.builtin.command: cat /etc/motd
+#    register: mymotd
+#
+#  - name: Run Windows equivalent
+#    ansible.windows.win_shell: C:\somescript.ps1 >> C:\somelog.txt
