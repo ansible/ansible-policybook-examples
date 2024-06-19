@@ -17,4 +17,9 @@ You can use something like this windows.yml playbook to test:
       state: present
       groups:
         - Users
+
+  - name: Set autologon for user
+    community.windows.win_auto_logon:
+      username: phil
+      password: password
 ```
