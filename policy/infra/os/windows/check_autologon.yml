@@ -1,0 +1,18 @@
+### check if autologon is set
+---
+- name: Checking Windows Policies
+  hosts: localhost 
+
+  policies:
+    - name: Check for user account auto logons
+      target: task
+      condition:
+        any:
+        - input["community.windows.win_auto_logon"] lacks key state # default = present
+        - input["community.windows.win_auto_logon"].state == "present" # more prescriptive
+        - input["community.windows.win_auto_logon"].username is defined # mandatory when state = present
+      actions:
+        - deny:
+            msg: Windows user auto logons are not permitted
+      tags:
+        - compliance
