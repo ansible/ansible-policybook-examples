@@ -15,7 +15,7 @@
         any:
         - input["cisco.ios.ios_config"].lines in banned_configurations.telnet
       actions:
-        - deny:
+        - warn:
             msg: "WARNING: Cisco IOS settings violation"
       tags:
         - security
