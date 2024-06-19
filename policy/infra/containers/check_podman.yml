@@ -1,0 +1,13 @@
+---
+- name: Podman related container policies
+  hosts: localhost
+  policies:
+    - name: Disallow pulling of latest container images
+      target: task
+      condition:
+        any:
+        - input["containers.podman.podman_image"] lacks key tag
+        - input["containers.podman.podman_image"].tag == "latest"
+      actions:
+        - deny:
+            msg: You are only permitted to pull approved version tagged container images
