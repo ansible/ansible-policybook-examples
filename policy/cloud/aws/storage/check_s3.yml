@@ -2,23 +2,18 @@
 # Checks for all things related to S3 buckets
 ---
 - name: Check S3 Policy Compliance
-  hosts: localhost 
-
+  hosts: localhost
+  vars:
+    algorithm: AES256
   policies:
-    - name: Check for mandatory use of encryption
+    - name: Check for mandatory use of encryption 2
       target: task
-      condition: input["amazon.aws.s3_bucket"] lacks key encryption
+      condition:
+        any:
+        - input["amazon.aws.s3_bucket"].encryption is not defined
+        - input["amazon.aws.s3_bucket"].encryption != algorithm
       actions:
         - deny:
-            msg: AWS S3 bucket encryption has to be enabled
-      tags:
-        - compliance
-            
-    - name: Check for correct encryption algorithm
-      target: task
-      condition: input["amazon.aws.s3_bucket"].encryption != AES256
-      actions:
-        - deny:
-            msg: AWS S3 bucket encryption algorithm does not meet standards
+            msg: AWS S3 bucket encryption does not meet standards
       tags:
         - compliance
