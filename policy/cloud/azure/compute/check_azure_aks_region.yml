@@ -1,0 +1,20 @@
+### Microsoft Azure cloud policies ###
+# This policybook checks the usage of AKS
+# Only allow deployments into certain cloud regions
+---
+- name: Check for Azure AKS region
+  hosts: localhost 
+  vars:
+    allowed_instance_regions:
+      - asia
+      - asiapacific
+      - australia
+  policies:
+    - name: Check for Azure AKS region
+      target: task
+      condition: input["azure_rm_aks"].location not in allowed_instance_regions
+      actions:
+        - deny:
+            msg: The Azure location {{ input["azure_rm_aks"].location }} is not allowed, you can only deploy to one of these {{ allowed_instance_regions }}
+      tags:
+        - compliance

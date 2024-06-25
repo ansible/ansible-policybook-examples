@@ -1,0 +1,17 @@
+### Microsoft Azure cloud policies ###
+# This policybook checks the usage of Azure autoscale groups and sizing
+# Only allow certain sizing for the avoidance of cost sprawl
+---
+- name: Policy checks for Azure Autoscaling
+  hosts: localhost 
+  vars:
+    allowed_max: 4
+  policies:
+    - name: Check Azure autoscaling sizing
+      target: task
+      condition: input["azure_rm_autoscale"].profiles["max_count"] > allowed_max
+      actions:
+        - deny:
+            msg: This autoscale sizing violates normal sizing guidelines
+      tags:
+        - compliance
