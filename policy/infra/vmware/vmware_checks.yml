@@ -1,0 +1,20 @@
+# Checks for all things related to VMware
+---
+- name: Check VMware Policy Compliance
+  hosts: localhost 
+  vars:
+    max_cpus: 4
+    max_memory_mb: 4096
+
+  policies:
+    - name: Checks for hardware compliance
+      target: task
+      condition:
+        any:
+        - input["community.vmware.vmware_guest"].hardware.num_cpus > max_cpus
+        - input["community.vmware.vmware_guest"].hardware.memory_mb > max_memory_mb
+      actions:
+        - deny:
+            msg: This amount of hardware allocation needs further approvals
+      tags:
+        - compliance
