@@ -1,0 +1,19 @@
+# This policybook checks if someone is using automation content that has been banned from use for whatever reason
+# That could be for cost control, standards alignment or security reasons
+# This will check both FQCN and non-FQCN for module checks 
+---
+- name: General or common AWS policy checks
+  hosts: localhost 
+  vars:
+    disallowed_modules:
+      - amazon.aws.ec2_instance
+      - community.aws.eks_fargate_profile
+  policies:
+    - name: Check for disallowed module usage
+      target: task
+      condition: input._agk.task.module_info.fqcn in disallowed_modules or input._agk.task.module in disallowed_modules
+      actions:
+        - deny:
+            msg: "You are not allowed to use these modules in automation tasks: {{ disallowed_modules }}"
+      tags:
+        - compliance
