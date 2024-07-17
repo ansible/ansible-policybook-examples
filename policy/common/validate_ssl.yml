@@ -1,0 +1,23 @@
+---
+- name: Check for right SSL settings
+  hosts: localhost 
+  policies:
+    - name: validate_certs should not be false
+      target: task
+      # neither work without further boolean support
+      #condition: input._agk.task.module_options.validate_certs == "false" or input._agk.task.module_options.validate_certs == "False"
+      #condition: input["ansible.builtin.uri"].validate_certs == "false" or input["ansible.builtin.uri"].validate_certs == "False"
+      actions:
+        - warn:
+            msg: validate_certs should be set to true
+
+
+# An example 'certs.yml' playbook for this policy check could be something as simple as:
+#
+#---
+#- hosts: localhost
+#  tasks:
+#  - name: uri fails because we didn't validate certs
+#    ansible.builtin.uri:
+#      validate_certs: false
+#      url: http://example.com
