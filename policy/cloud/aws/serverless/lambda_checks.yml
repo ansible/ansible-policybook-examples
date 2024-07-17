@@ -1,0 +1,16 @@
+### AWS lambda policy checks ###
+---
+- name: AWS Lambda based policy security checks
+  hosts: localhost
+  policies:
+    - name: Ensure use of VPC configuration
+      target: task
+      condition:
+        any:
+        - input["amazon.aws.lambda"] lacks key vpc_subnet_ids
+        - input["amazon.aws.lambda"] lacks key vpc_security_group_ids
+      actions:
+        - deny:
+            msg: You need to supply correct VPC parameters (vpc_subnet_ids & vpc_security_group_ids)
+      tags:
+        - compliance

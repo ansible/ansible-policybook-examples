@@ -1,0 +1,20 @@
+### AWS lambda policy checks ###
+---
+- name: AWS Lambda based policy assurance checks
+  hosts: localhost
+  vars:
+    essential_services:
+    - "HelloWorld"
+    - "AnotherOne"
+  policies:
+     - name: "Ensure we do not remove essential services"
+       target: task
+       condition:
+         any:
+         - input["amazon.aws.lambda"].name in essential_services and input["amazon.aws.lambda"].state == "absent" # if using FQCN
+         - input["lambda"].name in essential_services and input["lambda"].state == "absent" # if not using FQCN
+       actions:
+         - deny:
+             msg: Stopping the removal of essential Lambda services {{ essential_services }}
+       tags:
+         - compliance
