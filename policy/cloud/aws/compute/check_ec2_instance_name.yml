@@ -1,0 +1,14 @@
+### check EC2 usage policy ###
+# This policybook prohibits EC2 instances without a name tag to help easily identify it.
+---
+- name: Prohibit EC2 instances without a Name tag
+  hosts: localhost 
+  policies:
+    - name: Prohibit EC2 instances without a Name
+      target: task
+      condition: input["amazon.aws.ec2_instance"] lacks key name
+      actions:
+        - deny:
+            msg: You cannot create an EC2 instance without a Name tag
+      tags:
+        - compliance
